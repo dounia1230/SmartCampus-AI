@@ -49,3 +49,8 @@ envoyées directement au modèle Ollama avec un prompt conversationnel limité. 
 le classifieur ni par le RAG. Une réponse locale déterministe prend le relais si Ollama est arrêté.
 Les questions factuelles hors du domaine administratif ne sont pas routées vers ce mode afin de
 préserver le périmètre et les garanties de provenance du projet.
+
+Les appels Ollama désactivent explicitement le mode raisonnement (`think=false`) : les réponses
+courtes et structurées de ce projet n'en ont pas besoin et évitent ainsi de générer des jetons de
+réflexion invisibles. Le modèle reste chargé pendant 15 minutes (`keep_alive=15m`) afin de limiter
+les redémarrages à froid, au prix d'environ 3 Go de mémoire GPU occupée pendant cette période.

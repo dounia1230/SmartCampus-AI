@@ -9,6 +9,7 @@ from collections.abc import Callable, Sequence
 from typing import Any
 
 DEFAULT_OLLAMA_MODEL = "qwen3.5:4b"
+OLLAMA_KEEP_ALIVE = "15m"
 CITATION_PATTERN = re.compile(r"\[([A-Z]{3}\d{2})\]")
 
 
@@ -108,6 +109,8 @@ def generate_conversation_answer(
                 },
                 {"role": "user", "content": question.strip()},
             ],
+            think=False,
+            keep_alive=OLLAMA_KEEP_ALIVE,
             options={"temperature": 0.4},
         )
         return _response_content(response)
@@ -156,6 +159,8 @@ def generate_answer(
             model=selected_model,
             messages=build_messages(question, documents),
             format=_response_schema(allowed_ids),
+            think=False,
+            keep_alive=OLLAMA_KEEP_ALIVE,
             options={"temperature": 0},
         )
         raw_content = _response_content(response)

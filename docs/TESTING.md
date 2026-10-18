@@ -58,6 +58,7 @@ Un test réel du modèle `paraphrase-multilingual-MiniLM-L12-v2` a également cl
 - rechargement de l'index lorsque la base de procédures change ;
 - sources structurées acceptées même si le modèle omet leur répétition dans le texte ;
 - petites conversations routées vers Ollama avant le classifieur, avec repli local en cas de panne ;
+- mode raisonnement Ollama désactivé et maintien du modèle en mémoire vérifiés sur les deux chemins ;
 - panne Ollama signalée comme indisponibilité ;
 - citation absente ou inventée rejetée ;
 - pipeline nominal avec catégorie, confiance, documents et sources.

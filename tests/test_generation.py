@@ -32,6 +32,8 @@ def test_generate_conversation_answer_uses_local_model() -> None:
 
     assert answer == "Je vais bien, merci !"
     assert received["model"] == "qwen3.5:4b"
+    assert received["think"] is False
+    assert received["keep_alive"] == "15m"
     assert received["options"] == {"temperature": 0.4}
 
 
@@ -65,6 +67,8 @@ def test_generate_answer_returns_verified_sources() -> None:
     assert result["sources"] == ["PAY01"]
     assert result["answerable"] is True
     assert received["model"] == "qwen3.5:4b"
+    assert received["think"] is False
+    assert received["keep_alive"] == "15m"
     assert received["format"]["properties"]["sources"]["items"]["enum"] == ["PAY01"]
 
 
