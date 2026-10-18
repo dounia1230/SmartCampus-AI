@@ -44,4 +44,6 @@ uv run python -m evaluation.evaluate
 ```
 
 Consultez [docs/SETUP.md](docs/SETUP.md) pour l'installation détaillée et
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) pour comprendre le flux de traitement.
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) pour comprendre le flux de traitement. La méthode
+d'évaluation et ses limites sont décrites dans [docs/TESTING.md](docs/TESTING.md).
+Le périmètre et les non-objectifs sont fixés dans [docs/PRODUCT.md](docs/PRODUCT.md).

@@ -6,7 +6,7 @@
 - [x] Génération locale Ollama et validation des citations
 - [x] Règles métier et orchestration
 - [x] Interface de chat Streamlit
-- [ ] Évaluation, scénarios de sûreté et rapport
+- [x] Évaluation, scénarios de sûreté et rapport
 
 ## Améliorations après le MVP
 
