@@ -3,8 +3,8 @@
 - [x] Projet `uv`, structure empaquetée, documentation initiale
 - [x] Données d'entraînement et classifieur TF-IDF
 - [x] Base de connaissances et recherche sémantique
-- [ ] Génération locale Ollama et validation des citations
-- [ ] Règles métier et orchestration
+- [x] Génération locale Ollama et validation des citations
+- [x] Règles métier et orchestration
 - [ ] Interface de chat Streamlit
 - [ ] Évaluation, scénarios de sûreté et rapport
 

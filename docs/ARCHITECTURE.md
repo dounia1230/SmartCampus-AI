@@ -21,3 +21,14 @@ un index en mémoire est plus clair et suffisant ; une base vectorielle serait p
 - Une faible confiance ou un contexte insuffisant produit une abstention explicite.
 - L'interface ne contient pas de logique métier.
 - Les dépendances lourdes et modèles sont chargés paresseusement.
+
+## États de sortie
+
+L'orchestrateur renvoie un `statut` stable pour que l'interface ne déduise jamais l'état depuis
+le texte : `vide`, `entree_invalide`, `validation_humaine`, `authentification_requise`,
+`modele_indisponible`, `clarification_requise`, `information_insuffisante`,
+`service_indisponible` ou `termine`.
+
+Une réponse générée n'est acceptée que si elle contient au moins une citation issue des documents
+retrouvés et aucune citation inconnue. Cette validation limite les erreurs de provenance, mais ne
+prouve pas à elle seule que chaque phrase est fidèlement supportée.
