@@ -8,7 +8,11 @@ from collections.abc import Callable
 from typing import Any
 
 from smartcampus_ai.classification import ModelNotTrainedError, classify_request
-from smartcampus_ai.generation import GenerationError, generate_answer
+from smartcampus_ai.generation import (
+    GenerationServiceError,
+    InvalidCitationError,
+    generate_answer,
+)
 from smartcampus_ai.retrieval import search_documents
 
 CLASSIFICATION_THRESHOLD = 0.42
@@ -38,7 +42,36 @@ def _is_refund_request(question: str) -> bool:
 
 def _requires_authentication(question: str) -> bool:
     normalized = _normalize(question)
-    return bool(re.search(r"\b(certificat|attestation|justificatif)\b", normalized))
+    mentions_personal_document = re.search(
+        r"\b(certificat|attestation|justificatif)\w*\b", normalized
+    )
+    requests_document = re.search(
+        r"\b(obtenir|demander|recevoir|retirer|telecharger|recuperer|avoir|veux|souhaite|"
+        r"besoin|fournir|mon|ma|mes)\b",
+        normalized,
+    )
+    return bool(mentions_personal_document and requests_document)
+
+
+def _conversation_reply(question: str) -> str | None:
+    """Handle short social messages before administrative intent detection."""
+    normalized = _normalize(question)
+    compact = " ".join(re.sub(r"[^\w\s']", " ", normalized).split())
+    welcome_echo = (
+        "bonjour decrivez votre demande concernant une inscription une attestation ou un paiement"
+    )
+    greeting_pattern = r"(bonjour|bonsoir|salut|hello|coucou)( comment (ca va|allez vous))?"
+
+    if compact == welcome_echo or re.fullmatch(greeting_pattern, compact):
+        return (
+            "Bonjour ! Comment puis-je vous aider concernant une inscription, "
+            "une attestation ou un paiement ?"
+        )
+    if re.fullmatch(r"merci( beaucoup)?", compact):
+        return "Avec plaisir ! Avez-vous une autre question administrative ?"
+    if re.fullmatch(r"(au revoir|a bientot|bonne journee)", compact):
+        return "Au revoir et bonne journée !"
+    return None
 
 
 def analyse_request(
@@ -58,6 +91,9 @@ def analyse_request(
             "statut": "entree_invalide",
             "reponse": f"Votre demande doit contenir au maximum {MAX_QUESTION_LENGTH} caractères.",
         }
+
+    if conversation_reply := _conversation_reply(clean_question):
+        return {"statut": "conversation", "reponse": conversation_reply}
 
     if _is_refund_request(clean_question):
         return {
@@ -111,7 +147,14 @@ def analyse_request(
 
     try:
         generated = generator(clean_question, documents)
-    except GenerationError as error:
+    except InvalidCitationError as error:
+        return {
+            "statut": "reponse_non_fiable",
+            "reponse": str(error),
+            "categorie": category,
+            "confiance": confidence,
+        }
+    except GenerationServiceError as error:
         return {
             "statut": "service_indisponible",
             "reponse": str(error),

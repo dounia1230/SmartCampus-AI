@@ -144,12 +144,10 @@ def generate_answer(
         raise InvalidCitationError("Les sources structurées ne sont pas autorisées.")
 
     inline_citations = CITATION_PATTERN.findall(answer)
-    if answerable or inline_citations:
+    if inline_citations:
         verified_inline_citations = validate_citations(answer, allowed_ids)
-        if citations != verified_inline_citations:
-            raise InvalidCitationError(
-                "Les sources structurées ne correspondent pas aux citations de la réponse."
-            )
+        if not set(verified_inline_citations).issubset(citations):
+            raise InvalidCitationError("Une citation du texte est absente des sources structurées.")
     return {
         "answerable": answerable,
         "reponse": answer.strip(),

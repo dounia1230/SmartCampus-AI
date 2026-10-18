@@ -30,7 +30,7 @@ def test_generate_answer_returns_verified_sources() -> None:
                 content=json.dumps(
                     {
                         "answerable": True,
-                        "reponse": "Contactez le service comptable [PAY01].",
+                        "reponse": "Contactez le service comptable.",
                         "sources": ["PAY01"],
                     }
                 )

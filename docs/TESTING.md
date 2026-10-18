@@ -54,6 +54,9 @@ Un test réel du modèle `paraphrase-multilingual-MiniLM-L12-v2` a également cl
 - faible confiance transformée en demande de précision ;
 - absence de procédure transformée en abstention ;
 - documents proches mais insuffisants transformés en `information_insuffisante` par `answerable` ;
+- salutations traitées avant l'authentification et la classification ;
+- rechargement de l'index lorsque la base de procédures change ;
+- sources structurées acceptées même si le modèle omet leur répétition dans le texte ;
 - panne Ollama signalée comme indisponibilité ;
 - citation absente ou inventée rejetée ;
 - pipeline nominal avec catégorie, confiance, documents et sources.

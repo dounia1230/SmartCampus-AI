@@ -11,11 +11,13 @@ from smartcampus_ai.paths import CLASSIFIER_PATH
 
 STATUS_LABELS = {
     "termine": "Réponse documentée",
+    "conversation": "Conversation",
     "validation_humaine": "Validation humaine requise",
     "authentification_requise": "Authentification requise",
     "clarification_requise": "Précision nécessaire",
     "information_insuffisante": "Information insuffisante",
     "service_indisponible": "Service local indisponible",
+    "reponse_non_fiable": "Réponse non fiable",
     "modele_indisponible": "Modèle non entraîné",
     "entree_invalide": "Demande trop longue",
     "vide": "Demande vide",

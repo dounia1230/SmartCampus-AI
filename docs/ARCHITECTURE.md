@@ -36,3 +36,10 @@ prouve pas à elle seule que chaque phrase est fidèlement supportée.
 Ollama renvoie un objet structuré contenant `answerable`, `reponse` et `sources`. Même lorsque la
 recherche trouve des documents proches, `answerable=false` force l'orchestrateur à produire le
 statut `information_insuffisante` plutôt que de présenter une abstention comme une réponse terminée.
+La liste structurée `sources`, limitée par schéma aux documents récupérés, constitue la provenance
+de référence ; les citations intégrées au texte restent souhaitées mais ne sont pas obligatoires.
+
+Les salutations et remerciements sont traités avant les règles administratives. Mentionner le mot
+« attestation » ne déclenche une authentification que si la phrase exprime aussi une intention de
+demander ou d'obtenir un document. L'index sémantique est recréé automatiquement lorsque le fichier
+`procedures.json` change, sans exiger un redémarrage du serveur pendant le développement.

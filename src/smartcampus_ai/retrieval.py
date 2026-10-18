@@ -141,9 +141,15 @@ class SemanticRetriever:
         return results
 
 
-@lru_cache(maxsize=1)
-def get_retriever() -> SemanticRetriever:
+@lru_cache(maxsize=4)
+def _get_retriever(procedures_version: int) -> SemanticRetriever:
+    """Cache an index for one on-disk knowledge-base version."""
     return SemanticRetriever()
+
+
+def get_retriever() -> SemanticRetriever:
+    """Return an index that refreshes when the procedure file changes."""
+    return _get_retriever(PROCEDURES_PATH.stat().st_mtime_ns)
 
 
 def search_documents(

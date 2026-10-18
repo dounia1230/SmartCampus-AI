@@ -1,8 +1,10 @@
+import os
 from pathlib import Path
 
 import numpy as np
 import pytest
 
+import smartcampus_ai.retrieval as retrieval_module
 from smartcampus_ai.retrieval import Procedure, SemanticRetriever, load_procedures
 
 
@@ -63,3 +65,32 @@ def test_procedure_loader_rejects_duplicate_ids(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="dupliqué"):
         load_procedures(procedures_path)
+
+
+def test_cached_retriever_refreshes_when_knowledge_base_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    procedures_path = tmp_path / "procedures.json"
+    procedures_path.write_text("[]", encoding="utf-8")
+    created: list[object] = []
+
+    def fake_retriever() -> object:
+        instance = object()
+        created.append(instance)
+        return instance
+
+    monkeypatch.setattr(retrieval_module, "PROCEDURES_PATH", procedures_path)
+    monkeypatch.setattr(retrieval_module, "SemanticRetriever", fake_retriever)
+    retrieval_module._get_retriever.cache_clear()
+
+    first = retrieval_module.get_retriever()
+    assert retrieval_module.get_retriever() is first
+
+    initial_mtime = procedures_path.stat().st_mtime_ns
+    later_mtime = initial_mtime + 1_000_000_000
+    os.utime(procedures_path, ns=(later_mtime, later_mtime))
+    second = retrieval_module.get_retriever()
+
+    assert second is not first
+    assert len(created) == 2
+    retrieval_module._get_retriever.cache_clear()
