@@ -5,7 +5,7 @@
 - [x] Base de connaissances et recherche sémantique
 - [x] Génération locale Ollama et validation des citations
 - [x] Règles métier et orchestration
-- [ ] Interface de chat Streamlit
+- [x] Interface de chat Streamlit
 - [ ] Évaluation, scénarios de sûreté et rapport
 
 ## Améliorations après le MVP

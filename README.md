@@ -24,6 +24,9 @@ uv run streamlit run app.py
 Le modèle de classification est généré dans `models/classifier.joblib`. Le premier lancement
 de la recherche sémantique télécharge le modèle d'embeddings configuré.
 
+Dans la barre latérale, l'option d'authentification est une simulation pédagogique. Elle ne doit
+jamais être confondue avec un véritable contrôle d'identité.
+
 ## Commandes utiles
 
 ```powershell
