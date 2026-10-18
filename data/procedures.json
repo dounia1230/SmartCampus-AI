@@ -1,0 +1,38 @@
+[
+  {
+    "id": "INS01",
+    "categorie": "inscriptions",
+    "titre": "Dossier d'inscription",
+    "texte": "Pour s'inscrire, l'étudiant doit fournir une copie de sa CIN, une photo d'identité et une copie de son dernier diplôme. Le dossier doit être déposé au service des inscriptions."
+  },
+  {
+    "id": "INS02",
+    "categorie": "inscriptions",
+    "titre": "Suivi d'une candidature",
+    "texte": "Pour suivre une inscription, l'étudiant peut contacter le service des admissions avec son numéro de dossier. Le service informe l'étudiant de l'état de sa candidature."
+  },
+  {
+    "id": "ATT01",
+    "categorie": "attestations",
+    "titre": "Certificat de scolarité",
+    "texte": "Le certificat de scolarité peut être demandé au service administratif. L'identité de l'étudiant doit être vérifiée avant le traitement de la demande."
+  },
+  {
+    "id": "ATT02",
+    "categorie": "attestations",
+    "titre": "Attestation de réussite",
+    "texte": "L'attestation de réussite peut être demandée après la validation des résultats académiques. Une authentification préalable est obligatoire."
+  },
+  {
+    "id": "PAY01",
+    "categorie": "paiements",
+    "titre": "Factures et échéanciers",
+    "texte": "Pour obtenir une facture ou consulter un échéancier, l'étudiant doit contacter le service comptable. Il doit fournir sa référence de paiement."
+  },
+  {
+    "id": "PAY02",
+    "categorie": "paiements",
+    "titre": "Remboursement",
+    "texte": "Toute demande de remboursement des frais de scolarité nécessite une validation humaine par un responsable du service financier. Aucun remboursement ne peut être effectué automatiquement."
+  }
+]
