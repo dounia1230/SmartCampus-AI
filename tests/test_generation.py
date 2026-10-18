@@ -20,7 +20,10 @@ DOCUMENTS = [
 
 
 def test_generate_answer_returns_verified_sources() -> None:
-    def fake_chat(**_: object) -> SimpleNamespace:
+    received: dict[str, object] = {}
+
+    def fake_chat(**kwargs: object) -> SimpleNamespace:
+        received.update(kwargs)
         return SimpleNamespace(
             message=SimpleNamespace(content="Contactez le service comptable [PAY01].")
         )
@@ -28,6 +31,7 @@ def test_generate_answer_returns_verified_sources() -> None:
     result = generate_answer("Comment avoir une facture ?", DOCUMENTS, chat=fake_chat)
 
     assert result["sources"] == ["PAY01"]
+    assert received["model"] == "qwen3.5:4b"
 
 
 def test_generate_answer_rejects_invented_source() -> None:

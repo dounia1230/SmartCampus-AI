@@ -21,13 +21,23 @@ Le fichier `models/classifier.joblib` est un artefact local généré et ignoré
 
 ## 3. Préparer Ollama
 
-Installez Ollama, démarrez son service puis récupérez le modèle configuré :
+Installez Ollama et démarrez son service. Le modèle utilisé par défaut est `qwen3.5:4b`, déjà
+présent sur la machine de développement. Vérifiez les modèles locaux avec :
 
 ```powershell
-ollama pull llama3.2:3b
+ollama list
 ```
 
-L'application restera capable d'expliquer clairement une indisponibilité d'Ollama.
+Pour utiliser un autre modèle installé sans modifier le code, définissez la variable avant de
+lancer l'application :
+
+```powershell
+$env:SMARTCAMPUS_OLLAMA_MODEL = "Qwen3:8b"
+uv run streamlit run app.py
+```
+
+La variable ne vaut que pour la session PowerShell courante. Sans cette variable, l'application
+utilise `qwen3.5:4b`. Elle reste capable de signaler clairement une indisponibilité d'Ollama.
 
 ## 4. Lancer et vérifier
 

@@ -7,7 +7,7 @@ import re
 from collections.abc import Callable, Sequence
 from typing import Any
 
-DEFAULT_OLLAMA_MODEL = "llama3.2:3b"
+DEFAULT_OLLAMA_MODEL = "qwen3.5:4b"
 CITATION_PATTERN = re.compile(r"\[([A-Z]{3}\d{2})\]")
 
 
