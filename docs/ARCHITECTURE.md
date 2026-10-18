@@ -32,3 +32,7 @@ le texte : `vide`, `entree_invalide`, `validation_humaine`, `authentification_re
 Une réponse générée n'est acceptée que si elle contient au moins une citation issue des documents
 retrouvés et aucune citation inconnue. Cette validation limite les erreurs de provenance, mais ne
 prouve pas à elle seule que chaque phrase est fidèlement supportée.
+
+Ollama renvoie un objet structuré contenant `answerable`, `reponse` et `sources`. Même lorsque la
+recherche trouve des documents proches, `answerable=false` force l'orchestrateur à produire le
+statut `information_insuffisante` plutôt que de présenter une abstention comme une réponse terminée.

@@ -13,7 +13,7 @@ accompagnée des identifiants des procédures utilisées.
 
 ## Périmètre du MVP
 
-- trois catégories et six procédures fictives ;
+- trois catégories et sept procédures fictives ;
 - authentification simulée ;
 - réponses en français produites localement avec Ollama ;
 - abstention en cas d'incertitude ou de contexte insuffisant ;

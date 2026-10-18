@@ -34,5 +34,11 @@
     "categorie": "paiements",
     "titre": "Remboursement",
     "texte": "Toute demande de remboursement des frais de scolarité nécessite une validation humaine par un responsable du service financier. Aucun remboursement ne peut être effectué automatiquement."
+  },
+  {
+    "id": "PAY03",
+    "categorie": "paiements",
+    "titre": "Moyens de paiement acceptés",
+    "texte": "Les moyens de paiement acceptés sont la carte bancaire via le portail étudiant, le virement bancaire sur le compte communiqué par le service comptable et le paiement en espèces au guichet comptable. Les chèques ne sont pas acceptés. Pour tout paiement, l'étudiant doit indiquer son numéro étudiant ou sa référence de dossier."
   }
 ]

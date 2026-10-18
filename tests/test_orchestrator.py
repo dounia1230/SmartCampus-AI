@@ -66,6 +66,7 @@ def test_successful_pipeline_returns_metadata() -> None:
         classifier=confident_classification,
         retriever=lambda *_, **__: documents,
         generator=lambda *_: {
+            "answerable": True,
             "reponse": "Contactez la comptabilité [PAY01].",
             "sources": ["PAY01"],
         },
@@ -74,3 +75,28 @@ def test_successful_pipeline_returns_metadata() -> None:
     assert result["statut"] == "termine"
     assert result["sources"] == ["PAY01"]
     assert result["categorie"] == "paiements"
+
+
+def test_generated_insufficiency_uses_information_status() -> None:
+    documents = [
+        {
+            "id": "PAY01",
+            "categorie": "paiements",
+            "titre": "Factures",
+            "texte": "Contactez la comptabilité.",
+            "score": 0.7,
+        }
+    ]
+    result = analyse_request(
+        "Quels moyens de paiement sont acceptés ?",
+        classifier=confident_classification,
+        retriever=lambda *_, **__: documents,
+        generator=lambda *_: {
+            "answerable": False,
+            "reponse": "Cette procédure ne précise pas les moyens acceptés [PAY01].",
+            "sources": ["PAY01"],
+        },
+    )
+
+    assert result["statut"] == "information_insuffisante"
+    assert result["sources"] == ["PAY01"]

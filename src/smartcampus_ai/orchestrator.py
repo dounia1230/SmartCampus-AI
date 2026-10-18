@@ -17,7 +17,7 @@ MAX_QUESTION_LENGTH = 1_000
 
 Classifier = Callable[[str], dict[str, float | str]]
 Retriever = Callable[..., list[dict[str, str | float]]]
-Generator = Callable[..., dict[str, str | list[str]]]
+Generator = Callable[..., dict[str, bool | str | list[str]]]
 
 
 def _normalize(text: str) -> str:
@@ -117,6 +117,16 @@ def analyse_request(
             "reponse": str(error),
             "categorie": category,
             "confiance": confidence,
+        }
+
+    if not generated["answerable"]:
+        return {
+            "statut": "information_insuffisante",
+            "reponse": generated["reponse"],
+            "sources": generated["sources"],
+            "categorie": category,
+            "confiance": confidence,
+            "documents": documents,
         }
 
     return {
