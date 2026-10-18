@@ -1,6 +1,6 @@
 from typing import Never
 
-from smartcampus_ai.generation import InvalidCitationError
+from smartcampus_ai.generation import GenerationServiceError, InvalidCitationError
 from smartcampus_ai.orchestrator import analyse_request
 
 
@@ -46,6 +46,34 @@ def test_echoed_welcome_message_is_treated_as_conversation() -> None:
     )
 
     assert result["statut"] == "conversation"
+
+
+def test_small_talk_uses_conversation_model_before_classifier() -> None:
+    result = analyse_request(
+        "comment cava",
+        classifier=fail_if_called,
+        conversation_generator=lambda _: "Je vais très bien, merci !",
+    )
+
+    assert result == {
+        "statut": "conversation",
+        "reponse": "Je vais très bien, merci !",
+        "mode": "llm",
+    }
+
+
+def test_small_talk_has_safe_fallback_when_ollama_is_unavailable() -> None:
+    def unavailable(_: str) -> Never:
+        raise GenerationServiceError("offline")
+
+    result = analyse_request(
+        "Comment ça va ?",
+        classifier=fail_if_called,
+        conversation_generator=unavailable,
+    )
+
+    assert result["statut"] == "conversation"
+    assert result["mode"] == "fallback"
 
 
 def test_informational_attestation_question_does_not_require_authentication() -> None:

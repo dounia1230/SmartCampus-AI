@@ -57,6 +57,7 @@ Un test réel du modèle `paraphrase-multilingual-MiniLM-L12-v2` a également cl
 - salutations traitées avant l'authentification et la classification ;
 - rechargement de l'index lorsque la base de procédures change ;
 - sources structurées acceptées même si le modèle omet leur répétition dans le texte ;
+- petites conversations routées vers Ollama avant le classifieur, avec repli local en cas de panne ;
 - panne Ollama signalée comme indisponibilité ;
 - citation absente ou inventée rejetée ;
 - pipeline nominal avec catégorie, confiance, documents et sources.

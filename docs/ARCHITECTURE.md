@@ -43,3 +43,9 @@ Les salutations et remerciements sont traités avant les règles administratives
 « attestation » ne déclenche une authentification que si la phrase exprime aussi une intention de
 demander ou d'obtenir un document. L'index sémantique est recréé automatiquement lorsque le fichier
 `procedures.json` change, sans exiger un redémarrage du serveur pendant le développement.
+
+Les questions sociales courtes reconnues, comme « comment ça va ? » ou « qui es-tu ? », sont
+envoyées directement au modèle Ollama avec un prompt conversationnel limité. Elles ne passent ni par
+le classifieur ni par le RAG. Une réponse locale déterministe prend le relais si Ollama est arrêté.
+Les questions factuelles hors du domaine administratif ne sont pas routées vers ce mode afin de
+préserver le périmètre et les garanties de provenance du projet.

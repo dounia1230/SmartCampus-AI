@@ -73,6 +73,52 @@ def _default_chat(**kwargs: Any) -> Any:
     return ollama.chat(**kwargs)
 
 
+def _response_content(response: Any) -> str:
+    """Extract non-empty assistant content from an Ollama response."""
+    message = getattr(response, "message", None)
+    content = getattr(message, "content", None)
+    if content is None and isinstance(response, dict):
+        content = response.get("message", {}).get("content")
+    if not isinstance(content, str) or not content.strip():
+        raise GenerationServiceError("Ollama a renvoyé une réponse vide.")
+    return content.strip()
+
+
+def generate_conversation_answer(
+    question: str,
+    *,
+    model: str | None = None,
+    chat: Callable[..., Any] = _default_chat,
+) -> str:
+    """Use the local model for brief social conversation without administrative claims."""
+    selected_model = model or os.getenv("SMARTCAMPUS_OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL)
+    try:
+        response = chat(
+            model=selected_model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Tu es SmartCampus AI. Réponds en français à cette conversation sociale "
+                        "banale, naturellement et en une ou deux phrases. Tu peux être chaleureux, "
+                        "mais ne prétends pas être humain et n'invente aucune information "
+                        "administrative. Termine si possible en proposant ton aide pour une "
+                        "inscription, une attestation ou un paiement."
+                    ),
+                },
+                {"role": "user", "content": question.strip()},
+            ],
+            options={"temperature": 0.4},
+        )
+        return _response_content(response)
+    except GenerationError:
+        raise
+    except Exception as error:
+        raise GenerationServiceError(
+            "Le service de conversation local est indisponible."
+        ) from error
+
+
 def _response_schema(allowed_ids: set[str]) -> dict[str, Any]:
     """Build the structured-output schema constrained to retrieved source IDs."""
     return {
@@ -112,12 +158,7 @@ def generate_answer(
             format=_response_schema(allowed_ids),
             options={"temperature": 0},
         )
-        message = getattr(response, "message", None)
-        raw_content = getattr(message, "content", None)
-        if raw_content is None and isinstance(response, dict):
-            raw_content = response.get("message", {}).get("content")
-        if not isinstance(raw_content, str) or not raw_content.strip():
-            raise GenerationServiceError("Ollama a renvoyé une réponse vide.")
+        raw_content = _response_content(response)
         payload = json.loads(raw_content)
         answerable = payload["answerable"]
         answer = payload["reponse"]

@@ -12,6 +12,7 @@ from smartcampus_ai.generation import (
     GenerationServiceError,
     InvalidCitationError,
     generate_answer,
+    generate_conversation_answer,
 )
 from smartcampus_ai.retrieval import search_documents
 
@@ -22,6 +23,7 @@ MAX_QUESTION_LENGTH = 1_000
 Classifier = Callable[[str], dict[str, float | str]]
 Retriever = Callable[..., list[dict[str, str | float]]]
 Generator = Callable[..., dict[str, bool | str | list[str]]]
+ConversationGenerator = Callable[[str], str]
 
 
 def _normalize(text: str) -> str:
@@ -60,7 +62,7 @@ def _conversation_reply(question: str) -> str | None:
     welcome_echo = (
         "bonjour decrivez votre demande concernant une inscription une attestation ou un paiement"
     )
-    greeting_pattern = r"(bonjour|bonsoir|salut|hello|coucou)( comment (ca va|allez vous))?"
+    greeting_pattern = r"(bonjour|bonsoir|salut|hello|coucou)"
 
     if compact == welcome_echo or re.fullmatch(greeting_pattern, compact):
         return (
@@ -74,6 +76,23 @@ def _conversation_reply(question: str) -> str | None:
     return None
 
 
+def _is_llm_small_talk(question: str) -> bool:
+    """Recognize bounded social prompts that may safely bypass administrative RAG."""
+    normalized = _normalize(question)
+    compact = " ".join(re.sub(r"[^\w\s']", " ", normalized).split())
+    patterns = (
+        r"(?:bonjour |salut |bonsoir )?comment ca ?va",
+        r"(?:bonjour |salut |bonsoir )?ca ?va",
+        r"(?:comment )?(?:vas tu|allez vous)",
+        r"(?:tu vas|vous allez) bien",
+        r"quoi de neuf",
+        r"qui es tu",
+        r"comment (?:tu t'appelles|vous vous appelez)",
+        r"quel est ton nom",
+    )
+    return any(re.fullmatch(pattern, compact) for pattern in patterns)
+
+
 def analyse_request(
     question: str,
     authenticated: bool = False,
@@ -81,6 +100,7 @@ def analyse_request(
     classifier: Classifier = classify_request,
     retriever: Retriever = search_documents,
     generator: Generator = generate_answer,
+    conversation_generator: ConversationGenerator = generate_conversation_answer,
 ) -> dict[str, Any]:
     """Apply safety rules, classification, retrieval and grounded generation."""
     clean_question = question.strip()
@@ -94,6 +114,21 @@ def analyse_request(
 
     if conversation_reply := _conversation_reply(clean_question):
         return {"statut": "conversation", "reponse": conversation_reply}
+    if _is_llm_small_talk(clean_question):
+        try:
+            conversation_reply = conversation_generator(clean_question)
+            mode = "llm"
+        except GenerationServiceError:
+            conversation_reply = (
+                "Je vais bien, merci ! Comment puis-je vous aider concernant une inscription, "
+                "une attestation ou un paiement ?"
+            )
+            mode = "fallback"
+        return {
+            "statut": "conversation",
+            "reponse": conversation_reply,
+            "mode": mode,
+        }
 
     if _is_refund_request(clean_question):
         return {

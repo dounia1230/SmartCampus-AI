@@ -7,6 +7,7 @@ from smartcampus_ai.generation import (
     GenerationServiceError,
     InvalidCitationError,
     generate_answer,
+    generate_conversation_answer,
 )
 
 DOCUMENTS = [
@@ -18,6 +19,28 @@ DOCUMENTS = [
         "score": 0.9,
     }
 ]
+
+
+def test_generate_conversation_answer_uses_local_model() -> None:
+    received: dict[str, object] = {}
+
+    def fake_chat(**kwargs: object) -> SimpleNamespace:
+        received.update(kwargs)
+        return SimpleNamespace(message=SimpleNamespace(content="Je vais bien, merci !"))
+
+    answer = generate_conversation_answer("Comment ça va ?", chat=fake_chat)
+
+    assert answer == "Je vais bien, merci !"
+    assert received["model"] == "qwen3.5:4b"
+    assert received["options"] == {"temperature": 0.4}
+
+
+def test_generate_conversation_answer_wraps_service_failure() -> None:
+    def failing_chat(**_: object) -> None:
+        raise ConnectionError("offline")
+
+    with pytest.raises(GenerationServiceError, match="conversation local"):
+        generate_conversation_answer("Comment ça va ?", chat=failing_chat)
 
 
 def test_generate_answer_returns_verified_sources() -> None:
